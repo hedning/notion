@@ -197,6 +197,48 @@ end
 menus.focuslist=function() return focuslist(true) end
 menus.focuslist_=function() return focuslist(false) end
 
+local function ws_of(reg)
+    local ws=ioncore.find_manager(reg, "WGroupWS")
+    -- Fullscreen windows doesn't have a WGroupWS manager
+    if not ws then
+        ws=reg
+    end
+    return ws
+end
+
+function menus.workspacefocuslist()
+    local entries={}
+    local seen={}
+    local iter_=addto(entries)
+    local ws=ws_of(ioncore.current())
+    -- Ignore the current workspace
+    if ws then
+        seen[ws]=true
+    end
+
+    local function iter(reg)
+        ws=ws_of(reg)
+        -- Ignore scratchpads
+        if mod_sp.is_scratchpad(ioncore.find_manager(reg, "WFrame") or reg) then
+            return true
+        end
+
+        if not seen[ws] then
+            iter_(ws)
+            seen[ws]=true
+        end
+        return true
+    end
+
+    -- Add workspaces which have had focus
+    ioncore.focushistory_i(iter)
+
+    -- Add the rest
+    ioncore.region_i(iter, "WGroupWS")
+
+    return entries
+end
+
 -- }}}
 
 
