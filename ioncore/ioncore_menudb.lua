@@ -200,7 +200,7 @@ menus.focuslist_=function() return focuslist(false) end
 local function ws_of(reg)
     local ws=ioncore.find_manager(reg, "WGroupWS")
     -- Fullscreen windows doesn't have a WGroupWS manager
-    if not ws then
+    if not ws and obj_is(reg:parent(), "WScreen") then
         ws=reg
     end
     return ws
