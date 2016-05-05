@@ -199,6 +199,15 @@ menus.focuslist_=function() return focuslist(false) end
 
 local function ws_of(reg)
     local ws=ioncore.find_manager(reg, "WGroupWS")
+
+    -- Scratchpads are either a WGroupWS or a WFrame
+    local is_scratch= mod_sp
+        and (is_scratchpad(ws)
+                 or is_scratchpad(ioncore.find_manager(reg, "WFrame")))
+    -- Ignore scratchpads
+    if is_scratch then
+        return false
+    end
     -- Fullscreen windows doesn't have a WGroupWS manager
     if not ws and obj_is(reg:parent(), "WScreen") then
         ws=reg
@@ -218,13 +227,6 @@ function menus.workspacefocuslist()
 
     local function iter(reg)
         ws=ws_of(reg)
-        -- Scratchpads are either a WGroupWS or a WFrame
-        local is_scratch=is_scratchpad(ws)
-          or is_scratchpad(ioncore.find_manager(reg, "WFrame"))
-        -- Ignore scratchpads
-        if is_scratch then
-            return true
-        end
 
         if not seen[ws] then
             iter_(ws)
