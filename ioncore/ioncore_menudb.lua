@@ -204,16 +204,17 @@ local function ws_of(reg)
     local is_scratch= mod_sp
         and (is_scratchpad(ws)
                  or is_scratchpad(ioncore.find_manager(reg, "WFrame")))
-    -- Ignore scratchpads
-    if is_scratch then
-        return false
-    end
     -- Fullscreen windows doesn't have a WGroupWS manager
     -- but are the child of Screen
     if not ws and obj_is(reg:parent(), "WScreen") then
         ws=reg
     end
-    return ws or false
+    if is_scratch then
+        -- Ignore scratchpads
+        return false
+    else
+        return ws or false
+    end
 end
 
 function menus.workspacefocuslist()
