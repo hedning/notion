@@ -209,10 +209,11 @@ local function ws_of(reg)
         return false
     end
     -- Fullscreen windows doesn't have a WGroupWS manager
+    -- but are the child of Screen
     if not ws and obj_is(reg:parent(), "WScreen") then
         ws=reg
     end
-    return ws
+    return ws or false
 end
 
 function menus.workspacefocuslist()
@@ -228,7 +229,7 @@ function menus.workspacefocuslist()
     local function iter(reg)
         ws=ws_of(reg)
 
-        if not seen[ws] then
+        if ws and not seen[ws] then
             iter_(ws)
             seen[ws]=true
         end
