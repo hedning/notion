@@ -218,8 +218,11 @@ function menus.workspacefocuslist()
 
     local function iter(reg)
         ws=ws_of(reg)
+        -- Scratchpads are either a WGroupWS or a WFrame
+        local is_scratch=is_scratchpad(ws)
+          or is_scratchpad(ioncore.find_manager(reg, "WFrame"))
         -- Ignore scratchpads
-        if mod_sp.is_scratchpad(ioncore.find_manager(reg, "WFrame") or reg) then
+        if is_scratch then
             return true
         end
 
