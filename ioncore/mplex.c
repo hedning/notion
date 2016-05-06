@@ -948,10 +948,13 @@ static void do_switch(WMPlex *mplex, WLListNode *lnode)
 
 /*EXTL_DOC
  * Have \var{mplex} display the \var{n}:th object managed by it.
+ * Count from the end if \var{n} is negative, -1 being the end.
  */
 EXTL_EXPORT_MEMBER
-void mplex_switch_nth(WMPlex *mplex, uint n)
+void mplex_switch_nth(WMPlex *mplex, int n)
 {
+    if (n<0)
+        n=mplex->mx_count + n;
     do_switch(mplex, llist_nth_node(mplex->mx_list, n));
 }
 
