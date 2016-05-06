@@ -197,7 +197,7 @@ end
 menus.focuslist=function() return focuslist(true) end
 menus.focuslist_=function() return focuslist(false) end
 
-local function ws_of(reg)
+local function ws_or_fullscreen_of(reg)
     local ws=ioncore.find_manager(reg, "WGroupWS")
     local is_scratch=false
 
@@ -225,14 +225,14 @@ function menus.workspacefocuslist()
     local entries={}
     local seen={}
     local iter_=addto(entries)
-    local ws=ws_of(ioncore.current())
+    local ws=ws_or_fullscreen_of(ioncore.current())
     -- Ignore the current workspace
     if ws then
         seen[ws]=true
     end
 
     local function iter(reg)
-        ws=ws_of(reg)
+        ws=ws_or_fullscreen_of(reg)
 
         if ws and not seen[ws] then
             iter_(ws)
