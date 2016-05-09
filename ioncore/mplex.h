@@ -154,7 +154,7 @@ extern bool mplex_do_prepare_focus(WMPlex *mplex, WStacking *disp,
                                    WStacking *sub, int flags, 
                                    WPrepareFocusResult *res);
 
-extern void mplex_switch_nth(WMPlex *mplex, uint n);
+extern void mplex_switch_nth(WMPlex *mplex, int n);
 extern void mplex_switch_next(WMPlex *mplex);
 extern void mplex_switch_prev(WMPlex *mplex);
 extern void mplex_switch_to(WMPlex *mplex, WRegion *reg);
