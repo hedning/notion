@@ -197,6 +197,86 @@ end
 menus.focuslist=function() return focuslist(true) end
 menus.focuslist_=function() return focuslist(false) end
 
+local function ws_or_fullscreen_of(reg)
+    local ws=ioncore.find_manager(reg, "WGroupWS")
+    local is_scratch=false
+
+    if not ws then
+        -- Fullscreen windows doesn't have a WGroupWS manager
+        -- but are the child of Screen
+        ws=obj_is(reg:parent(), "WScreen") and reg
+        -- Scratchpads can be a frame
+        local frame=ioncore.find_manager(reg, "WFrame")
+        is_scratch=mod_sp and frame and mod_sp.is_scratchpad(frame)
+    else
+        -- Or a ws
+        is_scratch=mod_sp and mod_sp.is_scratchpad(ws)
+    end
+
+    if is_scratch then
+        -- Ignore scratchpads
+        return false
+    else
+        return ws or false
+    end
+end
+
+function menus.workspacefocuslist()
+    local entries={}
+    local seen={}
+    local iter_=addto(entries)
+    local ws=ws_or_fullscreen_of(ioncore.current())
+    -- Ignore the current workspace
+    if ws then
+        seen[ws]=true
+    end
+
+    local function iter(reg)
+        ws=ws_or_fullscreen_of(reg)
+
+        if ws and not seen[ws] then
+            iter_(ws)
+            seen[ws]=true
+        end
+        return true
+    end
+
+    -- Add workspaces which have had focus
+    ioncore.focushistory_i(iter)
+
+    -- Add the rest
+    ioncore.region_i(iter, "WGroupWS")
+
+    return entries
+end
+
+--DOC
+-- Go to and return to a previously active workspace (if any).
+--
+-- Note that this function is asynchronous; the region will not
+-- actually have received the focus when this function returns.
+function ioncore.goto_previous_workspace()
+    local ws
+    local current_ws=ws_or_fullscreen_of(ioncore.current())
+
+    local function iter(reg)
+        ws=ws_or_fullscreen_of(reg)
+
+        if ws and not (ws == current_ws) then
+            return false
+        end
+        return true
+    end
+
+    -- Add workspaces which have had focus
+    ioncore.focushistory_i(iter)
+
+    if ws then
+        ws:goto_focus()
+    end
+    return ws
+end
+
 -- }}}
 
 
