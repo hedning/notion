@@ -556,6 +556,30 @@ function mod_query.query_workspace(mplex)
 end
 
 
+function mod_query.attach_workspace_handler(mplex, name)
+    local ws=ioncore.lookup_region(name, "WGroupWS")
+    local screen=mplex:screen_of()
+    if ws then
+        screen:attach(ws, {switchto = true})
+    else
+        mod_query.warn(mplex, "No workspace with that name")
+    end
+end
+
+
+--DOC
+-- This query ask for the name of a workspace. If a workspace
+-- with such a name exists it will be attached to the currently
+-- active screen.
+function mod_query.query_attach_workspace(mplex)
+    mod_query.query(mplex:screen_of(), TR("Attach workspace:"),
+                    nil,
+                    mod_query.attachworkspace_handler,
+                    mod_query.make_completor(mod_query.complete_workspace),
+                    "workspacename")
+end
+
+
 --DOC
 -- This query asks whether the user wants to exit Ion (no session manager)
 -- or close the session (running under a session manager that supports such
