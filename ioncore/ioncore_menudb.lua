@@ -247,6 +247,11 @@ function menus.workspacefocuslist()
     -- Add the rest
     ioncore.region_i(iter, "WGroupWS")
 
+    -- Add create workspace entry
+    local create_ws=menuentry(" -- Create new workspace -- ",
+                              "mod_query.query_workspace(_)")
+    table.insert(entries, create_ws)
+
     return entries
 end
 
