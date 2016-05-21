@@ -225,14 +225,21 @@ function menus.workspacefocuslist()
     local entries={}
     local seen={}
     local iter_=addto(entries)
-    local ws=ws_or_fullscreen_of(ioncore.current())
-    -- Ignore the current workspace
-    if ws then
-        seen[ws]=true
+    local focused_ws=ws_or_fullscreen_of(ioncore.current())
+    -- Ignore the currently focused workspace
+    if focused_ws then
+        seen[focused_ws]=true
     end
 
     local function iter(reg)
-        ws=ws_or_fullscreen_of(reg)
+        local ws=ws_or_fullscreen_of(reg)
+
+        -- If we started in a scratchpad consider the first visited
+        -- workspace as the one we started in and ignore it
+        if not focused_ws and ws then
+            focused_ws=ws
+            seen[ws]=true
+        end
 
         if ws and not seen[ws] then
             iter_(ws)
@@ -262,12 +269,16 @@ end
 -- actually have received the focus when this function returns.
 function ioncore.goto_previous_workspace()
     local ws
-    local current_ws=ws_or_fullscreen_of(ioncore.current())
+    local focused_ws=ws_or_fullscreen_of(ioncore.current())
 
     local function iter(reg)
         ws=ws_or_fullscreen_of(reg)
 
-        if ws and not (ws == current_ws) then
+        if not focused_ws and ws then
+            focused_ws = ws
+        end
+
+        if ws and not (ws == focused_ws) then
             return false
         end
         return true
