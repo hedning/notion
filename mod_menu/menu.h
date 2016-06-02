@@ -93,4 +93,7 @@ extern void menu_select_nth(WMenu *menu, int n);
 extern void menu_select_prev(WMenu *menu);
 extern void menu_select_next(WMenu *menu);
 
+extern WSizePolicy menu_sizepolicy;
+extern bool menu_big;
+
 #endif /* ION_MOD_MENU_MENU_H */

@@ -85,7 +85,7 @@ WMenu *mod_menu_do_grabmenu(WMPlex *mplex, ExtlFn handler, ExtlTab tab,
     fnp.tab=tab;
     fnp.pmenu_mode=FALSE;
     fnp.submenu_mode=FALSE;
-    fnp.big_mode=extl_table_is_bool_set(param, "big");
+    fnp.big_mode=extl_table_is_bool_set(param, "big") ? TRUE : menu_big;
     fnp.initial=0;
     extl_table_gets_i(param, "initial", &(fnp.initial));
 
@@ -94,7 +94,7 @@ WMenu *mod_menu_do_grabmenu(WMPlex *mplex, ExtlFn handler, ExtlTab tab,
                MPLEX_ATTACH_UNNUMBERED|
                MPLEX_ATTACH_SIZEPOLICY);
     if (FALSE==extl_table_gets_sizepolicy(param, "sizepolicy", &par.szplcy))
-        par.szplcy=SIZEPOLICY_FULL_BOUNDS;
+        par.szplcy=menu_sizepolicy;
     par.level=STACKING_LEVEL_MODAL1+2;
 
     menu=(WMenu*)mplex_do_attach_new(mplex, &par,

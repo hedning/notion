@@ -1017,6 +1017,8 @@ void menu_cancel(WMenu *menu)
 static int scroll_time=20;
 static int scroll_amount=3;
 static WTimer *scroll_timer=NULL;
+WSizePolicy menu_sizepolicy=SIZEPOLICY_FULL_BOUNDS;
+bool menu_big=FALSE;
 
 
 static void reset_scroll_timer()
@@ -1046,11 +1048,17 @@ EXTL_EXPORT
 void mod_menu_set(ExtlTab tab)
 {
     int a, t;
+    WSizePolicy s;
+    bool b;
     
     if(extl_table_gets_i(tab, "scroll_amount", &a))
         scroll_amount=MAXOF(0, a);
     if(extl_table_gets_i(tab, "scroll_delay", &t))
         scroll_time=MAXOF(0, t);
+    if(extl_table_gets_sizepolicy(tab, "sizepolicy", &s))
+        menu_sizepolicy=s;
+    if(extl_table_gets_b(tab, "big", &b))
+        menu_big=b;
 }
 
 
@@ -1064,6 +1072,8 @@ ExtlTab mod_menu_get()
     ExtlTab tab=extl_create_table();
     extl_table_sets_i(tab, "scroll_amount", scroll_amount);
     extl_table_sets_i(tab, "scroll_delay", scroll_time);
+    extl_table_sets_s(tab, "sizepolicy", sizepolicy2string(menu_sizepolicy));
+    extl_table_sets_b(tab, "big", menu_big);
     return tab;
 }
 
